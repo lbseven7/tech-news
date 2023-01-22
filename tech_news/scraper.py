@@ -47,7 +47,7 @@ def scrape_next_page_link(html_content):
     sel = Selector(html_content)
     # Use o seletor CSS para selecionar o
     # elemento que contém o link da próxima página
-    url_proxima_pagina = sel.css('a.next page-numbers::attr(href)').get()
+    url_proxima_pagina = sel.css('a.next::attr(href)').get()
     if url_proxima_pagina:
         return url_proxima_pagina
     else:
