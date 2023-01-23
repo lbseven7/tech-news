@@ -18,28 +18,10 @@ def fetch(url: str, aguarde: int = 1) -> str:
 
 
 # Requisito 2 - Crie a função scrape_updates
-# https://blog.betrybe.com/carreira/
-# https://blog.betrybe.com/tecnologia/
-# https://blog.betrybe.com/desenvolvimento-web/
-# https://blog.betrybe.com/javascript/
-
-
+# ajuda do Charles Mendes
 def scrape_updates(html_content: str) -> list:
-    # selector = Selector(html_content)
-    card_noticia = Selector(html_content)
-    novas_urls = []
-    for url in card_noticia.css('.post-outer a::attr(href)').getall():
-        if 'button' not in card_noticia.css(
-         url).get():
-            novas_urls.append(url)
-        elif card_noticia.css(url).get() is None:
-            return []
-    return novas_urls
-
-
-if __name__ == "__main__":
-    page_content = fetch("https://blog.betrybe.com/")
-    updates = scrape_updates(page_content)
+    card_noticia = Selector(text=html_content)
+    return card_noticia.css('h2.entry-title a::attr(href)').getall()
 
 
 # Requisito 3
