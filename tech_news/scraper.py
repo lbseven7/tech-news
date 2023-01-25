@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from bs4 import BeautifulSoup
 
 
 # Requisito 1 Ciência da Computação - Aula 3.2 - Raspagem de Dados
@@ -21,7 +22,8 @@ def fetch(url: str, aguarde: int = 1) -> str:
 # ajuda do Charles Mendes
 def scrape_updates(html_content: str) -> list:
     card_noticia = Selector(text=html_content)
-    return card_noticia.css('h2.entry-title a::attr(href)').getall()
+    link = card_noticia.css('h2.entry-title a::attr(href)').getall()
+    return link
 
 
 # Requisito 3
@@ -38,7 +40,38 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_news(html_content):
-    pass
+    soup = BeautifulSoup(html_content, 'html.parser')
+
+    url = soup.find('link', {'rel': 'canonical'})['href']
+
+    title = soup.find('h1', class_='entry-title').text.strip()
+    timestamp = soup.find('li', class_='meta-date').text.strip()
+    writer = soup.find('span', class_='author').text.strip()
+
+    comments_count = soup.find('div', class_='comment-content')
+    if comments_count:
+        comments_count = int(comments_count.text)
+    else:
+        comments_count = 0
+
+    summary = soup.find(
+        'div', class_='entry-content').find("p").text.strip()
+
+    tags = Selector(text=html_content).css(
+        'section.post-tags ul li a::text').getall()
+
+    category = soup.find('span', class_='label').text.strip()
+
+    return {
+        'url': url,
+        'title': title,
+        'timestamp': timestamp,
+        'writer': writer,
+        'comments_count': comments_count,
+        'summary': summary,
+        'tags': tags,
+        'category': category
+    }
 
 
 # Requisito 5
