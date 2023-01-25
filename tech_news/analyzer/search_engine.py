@@ -21,7 +21,7 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    """Seu código deve vir aqui - Ajuda do Arlisson"""
     try:
         noticia_por_data = []
         date = datetime.fromisoformat(date).strftime('%d/%m/%Y')
@@ -44,3 +44,8 @@ def search_by_tag(tag):
 # Requisito 9
 def search_by_category(category):
     """Seu código deve vir aqui"""
+    noticia_por_categoria = []
+    news = search_news({"category": {"$regex": category, "$options": "i"}})
+    for new in news:
+        noticia_por_categoria.append((new["title"], new["url"]))
+    return noticia_por_categoria
