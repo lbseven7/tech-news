@@ -5,7 +5,6 @@ from datetime import datetime
 
 # Requisito 6
 
-
 def search_by_title(title):
     """Seu código deve vir aqui"""
     def pega_lista(query):
