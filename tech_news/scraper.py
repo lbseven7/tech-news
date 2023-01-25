@@ -2,6 +2,7 @@ import requests
 import time
 from parsel import Selector
 from bs4 import BeautifulSoup
+from tech_news.database import create_news
 
 
 # Requisito 1 Ciência da Computação - Aula 3.2 - Raspagem de Dados
@@ -48,11 +49,11 @@ def scrape_news(html_content):
     timestamp = soup.find('li', class_='meta-date').text.strip()
     writer = soup.find('span', class_='author').text.strip()
 
-    comments_count = soup.find('div', class_='comment-content')
-    if comments_count:
-        comments_count = int(comments_count.text)
-    else:
-        comments_count = 0
+    comments_count = len(soup.findAll('div', class_='comment-content'))
+    # if comments_count:
+    #     comments_count = int(comments_count.text)
+    # else:
+    #     comments_count = 0
 
     summary = soup.find(
         'div', class_='entry-content').find("p").text.strip()
@@ -76,4 +77,16 @@ def scrape_news(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    pass
+    noticias = []
+    urls = []
+    url = "https://blog.betrybe.com"
+
+    while len(urls) <= amount:
+        html_content = fetch(url)
+        urls.extend(scrape_updates(html_content))
+        url = scrape_next_page_link(html_content)
+    for link in urls[0:amount]:
+        html_content = fetch(link)
+        noticias.append(scrape_news(html_content))
+    create_news(noticias)
+    return noticias
